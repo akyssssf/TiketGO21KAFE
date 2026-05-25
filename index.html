@@ -1113,20 +1113,20 @@
     .nav-burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-    .mobile-drawer {
+   .mobile-drawer {
       position: fixed;
-      top: 0; right: 0; bottom: 0;
-      left: 0;
+      top: 0; right: 0; bottom: 0; left: 0;
       z-index: 850;
       background: var(--cream);
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 80px 32px 48px;
+      justify-content: center; /* Ubah ke center agar posisinya pas di tengah layar */
+      padding: 60px 32px 48px; /* Turunkan padding atas menjadi 60px */
       transform: translateX(100%);
       transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
       overflow-y: auto;
     }
+
     .mobile-drawer.open { transform: translateX(0); }
 
     .mobile-nav {
@@ -1134,7 +1134,9 @@
       flex-direction: column;
       gap: 0;
       width: 100%;
+      margin-top: 40px; /* Tambahkan margin atas untuk memberi jarak dari tombol close */
     }
+    
     .mobile-nav-link {
       font-family: var(--font-display);
       font-size: clamp(2.4rem, 11vw, 4rem);
@@ -1145,9 +1147,11 @@
       padding: 16px 0;
       border-bottom: 1px solid rgba(43,74,63,0.1);
       display: block;
+      text-align: center; /* Tambahkan baris ini */
       transition: padding-left 0.3s ease, color 0.2s;
       line-height: 1;
     }
+    
     .mobile-nav-link:first-child { border-top: 1px solid rgba(43,74,63,0.1); }
     .mobile-nav-link:active { color: var(--sage); padding-left: 8px; }
 
@@ -1232,8 +1236,6 @@
       <a href="#tickets" class="mobile-nav-link" data-close>Tiket</a>
       <a href="#syarat"  class="mobile-nav-link" data-close>Ketentuan</a>
       <a href="ticket.html" class="mobile-nav-cta" data-close>Beli Tiket Sekarang →</a>
-        Beli Tiket Sekarang →
-      </a>
     </nav>
   </div>
 
@@ -1482,51 +1484,19 @@
   </section>
 
   <!-- ============ PAYMENT EMBED ============ -->
-  <section id="bayar">
+  <section id="bayar" style="background: var(--forest); padding: 120px 0; text-align: center;">
     <div class="container">
-      <div class="payment-embed-layout">
-
-        <!-- Left: copy -->
-        <div class="payment-text reveal">
-          <p class="payment-eyebrow">Powered by Mayar · Pembayaran Aman</p>
-          <h2 class="payment-headline">
-            Amankan<br>Tempatmu<br>Sekarang
-          </h2>
-          <p class="payment-sub">
-            Tiket terbatas. Jangan sampai menyesal. Satu klik, satu malam yang tidak akan terlupakan.
-          </p>
-          <div class="payment-methods">
-            <span>🔒</span>
-            <span>Transfer Bank</span>
-            <span class="dot">·</span>
-            <span>QRIS</span>
-            <span class="dot">·</span>
-            <span>E-Wallet</span>
-          </div>
-        </div>
-
-        <!-- Right: Mayar iframe embedded, themed to match -->
-        <div class="payment-iframe-wrap reveal">
-          <div class="iframe-label">Checkout Langsung</div>
-          <div class="iframe-shell">
-            <iframe
-              src="https://21kafe.myr.id/pl/grand-opening-21-kafe"
-              title="Beli Tiket Grand Opening 21 Kafe"
-              frameborder="0"
-              scrolling="yes"
-              allow="payment"
-              loading="lazy"
-            ></iframe>
-            <!-- Fallback jika iframe diblokir browser -->
-            <div class="iframe-fallback">
-              <p>Checkout tidak bisa ditampilkan di sini.</p>
-              <a href="https://21kafe.myr.id/pl/grand-opening-21-kafe" class="btn-mega-alt" target="_blank" rel="noopener">
-                Buka Halaman Tiket →
-              </a>
-            </div>
-          </div>
-        </div>
-
+      <div class="reveal">
+        <p class="payment-eyebrow" style="margin-bottom: 20px;">Powered by Mayar · Pembayaran Aman</p>
+        <h2 class="payment-headline" style="margin-bottom: 24px;">
+          Amankan Tempatmu<br>Sekarang
+        </h2>
+        <p class="payment-sub" style="margin: 0 auto 40px auto; max-width: 480px;">
+          Tiket terbatas. Jangan sampai menyesal. Satu klik menuju malam yang tidak akan terlupakan.
+        </p>
+        <a href="ticket.html" class="btn-ticket-buy" style="font-size: 0.75rem; padding: 18px 42px;">
+          Beli Tiket Sekarang →
+        </a>
       </div>
     </div>
   </section>
@@ -1554,36 +1524,6 @@
 
   <!-- ============ MAYAR EMBED SCRIPT ============ -->
   <!-- Tombol Bayar popup (untuk btn-ticket-buy di section tiket) -->
-  <script src="https://s.mayar.id/js/embed.js" async></script>
-
-  <!-- Iframe fallback detector -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const iframe = document.querySelector('.iframe-shell iframe');
-      const fallback = document.querySelector('.iframe-fallback');
-      if (!iframe || !fallback) return;
-
-      // Show fallback if iframe errors or if browser blocks cross-origin display
-      iframe.addEventListener('error', () => {
-        iframe.style.display = 'none';
-        fallback.style.display = 'flex';
-      });
-
-      // Timeout check — if iframe stays blank (X-Frame-Options blocked), show fallback
-      setTimeout(() => {
-        try {
-          // If we can access contentDocument, it loaded fine
-          const doc = iframe.contentDocument || iframe.contentWindow.document;
-          if (!doc || doc.body === null || doc.body.innerHTML === '') {
-            iframe.style.display = 'none';
-            fallback.style.display = 'flex';
-          }
-        } catch(e) {
-          // Cross-origin = loaded from external domain = iframe is working fine, do nothing
-        }
-      }, 4000);
-    });
-  </script>
   <script>
     // ── Mobile Drawer ──────────────────────────────────
     const burger = document.getElementById('navBurger');
